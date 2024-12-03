@@ -1,4 +1,11 @@
-venv
+# Ignore the virtual environment folder
+venv/
+
+# Ignore the data folder where input/output files are stored
 data/
+
+# Ignore the configuration file with sensitive information (e.g., API keys)
 config.py
-__pycache__
+
+# Ignore Python's compiled bytecode files and cache directories
+__pycache__/
