@@ -9,3 +9,5 @@ config.py
 
 # Ignore Python's compiled bytecode files and cache directories
 __pycache__/
+
+.DS_Store

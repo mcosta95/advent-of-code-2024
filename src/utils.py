@@ -73,7 +73,7 @@ def submit_answer(day, part, answer):
         print("Answer submitted successfully!")
         if "That's the right answer!" in response.text:
             print("✅ Correct! You've completed this part.")
-        elif "That's not the right answer." in response.text:
+        elif "That's not the right answer" in response.text:
             print("❌ Incorrect answer. Try again.")
         elif "Did you already complete it" in response.text:
             print("ℹ️ You already completed this part.")
