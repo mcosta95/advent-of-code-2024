@@ -11,8 +11,7 @@ project_root = Path(__file__).resolve().parent.parent  # Two levels up to the ro
 sys.path.append(str(project_root))
 
 from config import BASE_DAY_URL, HEADERS
-from src.utils import get_daily_title, submit_answer
-import time
+from src.utils import get_daily_title, run_part
 
 def main_code(data, part=1):
     pass
@@ -22,53 +21,17 @@ def process_data(file_name, part):
         data = file.read()
     return main_code(data, part)
 
-def run_part(day, part, expected_results):
-    start_time = time.time()
-    test_result = process_data(f"data/test/day_{{day}}_part_{{part}}.txt", part)
-    elapsed_time = time.time() - start_time
-    
-    rint(f"Time taken for test part {{part}}: {{elapsed_time:.2f}} seconds")
-    if test_result == expected_results[part]:
-        start_time = time.time()
-        print(f"Part {{part}} test passed!")
-
-        final_result = process_data(f"data/input/day_{{day}}_part_{{part}}.txt", part)
-        print(f"Submitting result for part {{part}}: {{final_result}}")
-        submit_answer(day, part, final_result)
-        elapsed_time = time.time() - start_time
-        rint(f"Time taken for final part {{part}}: {{elapsed_time:.2f}} seconds")
-    else:
-        print(f"Part {{part}} test failed. Expected {{expected_results[part]}}, got {{test_result}}.")
-
 def main():
     day = {day}
     expected_results = {{1: None, 2: None}} # fill this
     title = get_daily_title(day, BASE_DAY_URL, HEADERS)
     print(f"Starting puzzle for day {{day}}: {{title}}")
-    run_part(day, 1, expected_results)
-    run_part(day, 2, expected_results)
+    run_part(day, 1, expected_results, process_data)
+    run_part(day, 2, expected_results, process_data)
 
 if __name__ == "__main__":
     main()
 """
-def run_part(day, part, expected_results):
-
-    start_time = time.time()
-    test_result = process_data(f"data/test/day_{day}_part_{part}.txt", part)
-    elapsed_time = time.time() - start_time
-    print(f"Time taken for test part {part}: {elapsed_time:.2f} seconds")
-    
-    if test_result == expected_results[part]:
-
-        start_time = time.time()
-        print(f"Part {part} test passed!")
-        final_result = process_data(f"data/input/day_{day}_part_{part}.txt", part)
-        print(f"Submitting result for part {part}: {final_result}")
-        submit_answer(day, part, final_result)
-        print(f"Time taken for final part {part}: {elapsed_time:.2f} seconds")
-    else:
-        print(f"Part {part} test failed. Expected {expected_results[part]}, got {test_result}.")
-
 
 def create_day(day, part):
     DAYS_DIR = "days"

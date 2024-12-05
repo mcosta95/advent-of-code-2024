@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from config import BASE_DAY_URL, HEADERS
-
+import time
 
 def get_daily_title(day, BASE_URL, HEADERS):
     response = requests.get(f"{BASE_URL}{day}", headers=HEADERS)
@@ -86,3 +86,22 @@ def submit_answer(day, part, answer):
         print(f"Failed to submit answer for day {day}, part {part}.")
         print(f"HTTP Status Code: {response.status_code}")
         print("Response Text:", response.text)
+
+
+def run_part(day, part, expected_results, process_data):
+
+    start_time = time.time()
+    test_result = process_data(f"data/test/day_{day}_part_{part}.txt", part)
+    elapsed_time = time.time() - start_time
+    print(f"Time taken for test part {part}: {elapsed_time:.2f} seconds")
+    
+    if test_result == expected_results[part]:
+
+        start_time = time.time()
+        print(f"Part {part} test passed!")
+        final_result = process_data(f"data/input/day_{day}_part_{part}.txt", part)
+        print(f"Submitting result for part {part}: {final_result}")
+        submit_answer(day, part, final_result)
+        print(f"Time taken for final part {part}: {elapsed_time:.2f} seconds")
+    else:
+        print(f"Part {part} test failed. Expected {expected_results[part]}, got {test_result}.")
