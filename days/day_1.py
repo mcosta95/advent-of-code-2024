@@ -36,7 +36,7 @@ def main():
     day = 1
     expected_results = {1: 11, 2: 31}
     title = get_daily_title(day, BASE_DAY_URL, HEADERS)
-    print(f"Starting puzzle for day {day}: {title}")
+    print(f"🧩 Starting puzzle for: {title}")
     run_part(day, 1, expected_results, main_code)
     run_part(day, 2, expected_results, main_code)
 
