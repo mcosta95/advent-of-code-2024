@@ -1,3 +1,5 @@
+
+# ENUM for directions
 ALL_DIRECTIONS = [
         (-1, -1),  # up-left
         (-1, 0),   # up

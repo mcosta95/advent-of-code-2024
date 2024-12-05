@@ -10,8 +10,7 @@ from src.utils import get_daily_title, submit_answer
 import re
 
 def apply_multiplication(str_):
-
-    a, b  = map(int,re.findall(r'\d+', str_))
+    a, b  = map(int, re.findall(r'\d+', str_))
     return a * b
 
 def main_code(data, part=1):

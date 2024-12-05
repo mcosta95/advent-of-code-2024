@@ -13,8 +13,7 @@ from collections import Counter
 def is_valid_position(x, y, rows, cols):
     return 0 <= x < rows and 0 <= y < cols
 
-
-def build_matrix(data, word_build, start_letter, directions, part):
+def build_matrix(data, word_build, start_letter, directions):
     count_ = 0
     rows, cols = len(data), len(data[0])
     final_matrix = [['.' for _ in range(cols)] for _ in range(rows)]
@@ -22,7 +21,6 @@ def build_matrix(data, word_build, start_letter, directions, part):
     for row_ in range(rows):
         for col_ in range(cols):
             if data[row_][col_] == start_letter:
-
                 # transform this part on a function
                 for direction in directions:
                     dx, dy = direction
@@ -45,7 +43,6 @@ def build_matrix(data, word_build, start_letter, directions, part):
 
     return final_matrix, count_
 
-
 def find_mas_x(data, directions_):
     count = 0
     rows, cols = len(data), len(data[0])
@@ -54,7 +51,6 @@ def find_mas_x(data, directions_):
         for col in range(1, cols - 1):
             if data[row][col] == "A":
                 vect_bool = [data[row + dir_[0]][col + dir_[1]] in ['M', 'S'] for dir_ in directions_]
-
                 if all(vect_bool):
                     vect_letter = [data[row + dir_[0]][col + dir_[1]] for dir_ in directions_]
                     vect_letter_count = Counter(vect_letter)
@@ -66,13 +62,11 @@ def find_mas_x(data, directions_):
 
 def main_code(data, part=1):
 
-
-    
     if part==1:
-        _, score_ = build_matrix(data, word_build="XMAS", start_letter="X", directions=ALL_DIRECTIONS, part=part)
+        _, score_ = build_matrix(data, word_build="XMAS", start_letter="X", directions=ALL_DIRECTIONS)
 
     else:
-        matrix_, _ = build_matrix(data, word_build="MAS", start_letter="M", directions=DIAGONAL_DIRECTIONS, part=part)
+        matrix_, _ = build_matrix(data, word_build="MAS", start_letter="M", directions=DIAGONAL_DIRECTIONS)
         score_ = find_mas_x(matrix_, DIAGONAL_DIRECTIONS)
 
     return score_

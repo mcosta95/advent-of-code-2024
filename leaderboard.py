@@ -1,25 +1,31 @@
 import requests
-from bs4 import BeautifulSoup
 from config import HEADERS, LEADERBOARD_URL, BASE_DAY_URL, SHAREPOINT_PATH
 from src.utils import get_daily_title
 
 import pandas as pd
+from datetime import datetime
 
 from openpyxl import load_workbook
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
 
-def current_day(row_):
-    # Find all anchor tags (with href)
-    day_links = row_.find_all('a', href=True)
-
-    # Extract the day numbers
-    days = [int(link['href'].split('/day/')[1]) for link in day_links]
-
-    # Get the last day with a link (the current day)
-    current_day = max(days)
+def current_day():
+    today = datetime.now()
+    if today.month != 12:
+        raise ValueError("This script only works during December.")
+    current_day = today.day
     return current_day
 
+def get_rank_positions(df):
+
+    df['rank'] = df['score'].rank(method='dense', ascending=False).astype(int)
+    emoji_map = {1: "🥇", 2: "🥈", 3: "🥉"}
+    df['position'] = df['rank'].map(emoji_map).fillna("😭") + " " + df['rank'].astype(str)
+
+    df.sort_values(by="rank", inplace=True)
+    df.drop(columns=["rank"], inplace=True)
+
+    return df
 
 def fetch_leaderboard_data():
     response = requests.get(LEADERBOARD_URL, headers=HEADERS)
@@ -27,54 +33,30 @@ def fetch_leaderboard_data():
     if response.status_code != 200:
         print("Failed to fetch leaderboard!")
 
+    data_ = eval(response.text)['members']
 
-    soup = BeautifulSoup(response.text, 'html.parser')
+    leaderboard_list = []
+    for _, values in data_.items():
+        row = {'user': values['name'], 
+               'score': values['local_score'],
+               'stars': values['stars'],
+               'last_star_date': datetime.utcfromtimestamp(values['last_star_ts']).strftime("%Y-%m-%d %H:%M:%S")}
+        leaderboard_list.append(row)
 
-    leaderboard_rows = soup.find_all('div', class_='privboard-row')
-    curr_day = current_day(leaderboard_rows[0])
+    # Accumulate rows in a list
+    df = pd.DataFrame(leaderboard_list)
 
-    leaderboard_data = []
-    prev_score = None  # Store the score from the previous row to handle ties
-    actual_position = 0  #
+    # positions attribution
+    df = get_rank_positions(df)
+    df['score'] = df['score'].apply(lambda x: f"{x} points")
 
-    # Loop through each row and extract the position, stars, and user name
-    for row in leaderboard_rows[1:]:  # Skip the first row with the day info
-
-        if row.find('span', class_='privboard-position'):
-            position = int(row.find('span', class_='privboard-position').text.replace(")", "").strip())
-            score = int(row.contents[1].strip())
-        else:
-            score = int(row.contents[0].strip())
-
-        user = row.find('span', class_='privboard-name').text.strip()
-
-        # Handle tie logic: If current score is the same as previous, don't change the actual position
-        if score != prev_score:
-            # New position, so update the previous score and actual position
-            prev_score = score
-            actual_position += 1  # Move to the next actual position
-
-        # Append emoji for the first 3 positions
-        if actual_position == 1:
-            position_text = f"🥇 {position}"
-        elif actual_position == 2:
-            position_text = f"🥈 {position}"
-        elif actual_position == 3:
-            position_text = f"🥉 {position}"
-        else:
-            position_text = f"😭 {position}"
-        
-        leaderboard_data.append({
-            'position': position_text,
-            'score': f"{score} points",
-            'user': user
-        })
-
-    df = pd.DataFrame(leaderboard_data)
+    curr_day = current_day()
     df['day'] = curr_day - 1
+    df['title'] = get_daily_title(curr_day, BASE_DAY_URL, HEADERS)
 
-    title = get_daily_title(curr_day, BASE_DAY_URL, HEADERS)
-    df['title'] = title
+    df['total_stars'] = sum(df['stars'])
+    df['goal_stars'] = 2*curr_day*df.shape[0]
+    df['goal_stars_perc'] = (df['total_stars']/df['goal_stars'])*100
 
     return df
 
