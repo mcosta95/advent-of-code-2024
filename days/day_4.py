@@ -7,7 +7,7 @@ sys.path.append(str(project_root))
 
 from config import BASE_DAY_URL, HEADERS
 from src.utils import get_daily_title, run_part
-from src.tools import ALL_DIRECTIONS, DIAGONAL_DIRECTIONS
+from src.tools import DIRECTIONS
 from src.read_data import read_txt_vector_matrix_str
 from collections import Counter
 
@@ -67,11 +67,11 @@ def main_code(file_name, part=1):
     data = read_txt_vector_matrix_str(file_name)
 
     if part==1:
-        _, score_ = build_matrix(data, word_build="XMAS", start_letter="X", directions=ALL_DIRECTIONS)
+        _, score_ = build_matrix(data, word_build="XMAS", start_letter="X", directions=DIRECTIONS.all_directions())
 
     else:
-        matrix_, _ = build_matrix(data, word_build="MAS", start_letter="M", directions=DIAGONAL_DIRECTIONS)
-        score_ = find_mas_x(matrix_, DIAGONAL_DIRECTIONS)
+        matrix_, _ = build_matrix(data, word_build="MAS", start_letter="M", directions=DIRECTIONS.diagonal_directions())
+        score_ = find_mas_x(matrix_, DIRECTIONS.diagonal_directions())
 
     return score_
 
