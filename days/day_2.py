@@ -33,6 +33,7 @@ def pairwise_distances_exclude_one(vector):
 
     return any(results)
 
+
 def main_code(file_name, part=1):
     """
     Logic for part 2: 
@@ -61,7 +62,7 @@ def main():
     day = 2
     expected_results = {1: 2, 2:4}
     title = get_daily_title(day, BASE_DAY_URL, HEADERS)
-    print(f"Starting puzzle for day {day}: {title}")
+    print(f"🧩 Starting puzzle for: {title}")
     run_part(day, 1, expected_results, main_code)
     run_part(day, 2, expected_results, main_code)
 
