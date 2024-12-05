@@ -6,14 +6,17 @@ project_root = Path(__file__).resolve().parent.parent  # Two levels up to the ro
 sys.path.append(str(project_root))
 
 from config import BASE_DAY_URL, HEADERS
-from src.utils import get_daily_title, submit_answer
+from src.utils import get_daily_title, run_part
+from src.read_data import read_txt_to_str
 import re
 
 def apply_multiplication(str_):
     a, b  = map(int, re.findall(r'\d+', str_))
     return a * b
 
-def main_code(data, part=1):
+def main_code(file_name, part=1):
+
+    data = read_txt_to_str(file_name)
     
     if part == 1:
         pattern = r"mul\((\d+),(\d+)\)"
@@ -36,32 +39,13 @@ def main_code(data, part=1):
     return sum(multiply_)
 
 
-def process_data(file_name, part):
-    with open(file_name, "r") as file:
-        data = file.read()
-    return main_code(data, part)
-
-
-def run_part(day, part, expected_results):
-
-    test_result = process_data(f"data/test/day_{day}_part_{part}.txt", part)
-    
-    if test_result == expected_results[part]:
-        print(f"Part {part} test passed!")
-
-        final_result = process_data(f"data/input/day_{day}_part_{part}.txt", part)
-        print(f"Submitting result for part {part}: {final_result}")
-        submit_answer(day, part, final_result)
-    else:
-        print(f"Part {part} test failed. Expected {expected_results[part]}, got {test_result}.")
-
 def main():
     day = 3
     expected_results = {1: 161, 2:48}
     title = get_daily_title(day, BASE_DAY_URL, HEADERS)
-    print(f"Starting puzzle for day {day}: {title}")
-    run_part(day, 1, expected_results)
-    run_part(day, 2, expected_results)
+    print(f"🧩 Starting puzzle for: {title}")
+    run_part(day, 1, expected_results, main_code)
+    run_part(day, 2, expected_results, main_code)
 
 if __name__ == "__main__":
     main()
