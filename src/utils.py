@@ -70,20 +70,19 @@ def submit_answer(day, part, answer):
     response = requests.post(submit_url, data=payload, headers=HEADERS)
     
     if response.status_code == 200:
-        print("Answer submitted successfully!")
         if "That's the right answer!" in response.text:
-            print("✅ Correct! You've completed this part.")
+            print("🚀 Correct! You've completed this part.")
         elif "That's not the right answer" in response.text:
             print("❌ Incorrect answer. Try again.")
         elif "Did you already complete it" in response.text:
-            print("ℹ️ You already completed this part.")
+            print("🤔 You already submited this part!")
         elif "You gave an answer too recently" in response.text:
             print("⏳ Slow down! You're submitting too quickly.")
         else:
-            print("⚠️ Unexpected response:")
+            print("🔥 Unexpected response:")
             print(response.text)
     else:
-        print(f"Failed to submit answer for day {day}, part {part}.")
+        print(f"⚠️ Failed to submit answer for day {day}, part {part}.")
         print(f"HTTP Status Code: {response.status_code}")
         print("Response Text:", response.text)
 
@@ -92,16 +91,17 @@ def run_part(day, part, expected_results, process_data):
 
     start_time = time.time()
     test_result = process_data(f"data/test/day_{day}_part_{part}.txt", part)
-    elapsed_time = time.time() - start_time
-    print(f"Time taken for test part {part}: {elapsed_time:.2f} seconds")
-    
+    elapsed_time_test = time.time() - start_time
+    print(f"")
     if test_result == expected_results[part]:
 
         start_time = time.time()
-        print(f"Part {part} test passed!")
+        print(f"✅ [Part {part}] test passed!")
         final_result = process_data(f"data/input/day_{day}_part_{part}.txt", part)
-        print(f"Submitting result for part {part}: {final_result}")
+        print(f"⭐️ Submitting result for part {part}: {final_result}")
         submit_answer(day, part, final_result)
-        print(f"Time taken for final part {part}: {elapsed_time:.2f} seconds")
+        elapsed_time_final = time.time() - start_time
+        print(f"⌛️ Time taken for [test]: {elapsed_time_test:.2f} seconds")
+        print(f"⌛️ Time taken for [final]: {elapsed_time_final:.2f} seconds")
     else:
         print(f"Part {part} test failed. Expected {expected_results[part]}, got {test_result}.")

@@ -25,7 +25,7 @@ def main():
     day = {day}
     expected_results = {{1: None, 2: None}} # fill this
     title = get_daily_title(day, BASE_DAY_URL, HEADERS)
-    print(f"Starting puzzle for day {{day}}: {{title}}")
+    print(f"🧩 Starting puzzle for: {{title}}")
     run_part(day, 1, expected_results, process_data)
     run_part(day, 2, expected_results, process_data)
 
