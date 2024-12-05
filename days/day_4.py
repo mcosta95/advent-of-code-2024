@@ -6,12 +6,15 @@ project_root = Path(__file__).resolve().parent.parent  # Two levels up to the ro
 sys.path.append(str(project_root))
 
 from config import BASE_DAY_URL, HEADERS
-from src.utils import get_daily_title, submit_answer
+from src.utils import get_daily_title, run_part
 from src.tools import ALL_DIRECTIONS, DIAGONAL_DIRECTIONS
+from src.read_data import read_txt_vector_matrix_str
 from collections import Counter
+
 
 def is_valid_position(x, y, rows, cols):
     return 0 <= x < rows and 0 <= y < cols
+
 
 def build_matrix(data, word_build, start_letter, directions):
     count_ = 0
@@ -37,11 +40,10 @@ def build_matrix(data, word_build, start_letter, directions):
                             idx_x, idx_y = row_ + dx * i, col_ + dy * i
                             final_matrix[idx_x][idx_y] = word_build[i]
                         
-                        count_ += 1 
-                        print(f"We already have: {count_}")
-                    
+                        count_ += 1                     
 
     return final_matrix, count_
+
 
 def find_mas_x(data, directions_):
     count = 0
@@ -60,7 +62,9 @@ def find_mas_x(data, directions_):
     return count
 
 
-def main_code(data, part=1):
+def main_code(file_name, part=1):
+
+    data = read_txt_vector_matrix_str(file_name)
 
     if part==1:
         _, score_ = build_matrix(data, word_build="XMAS", start_letter="X", directions=ALL_DIRECTIONS)
@@ -72,31 +76,13 @@ def main_code(data, part=1):
     return score_
 
 
-def process_data(file_name, part):
-    with open(file_name, "r") as file:
-        data = [list(line.strip()) for line in file]
-    return main_code(data, part)
-
-def run_part(day, part, expected_results):
-
-    test_result = process_data(f"data/test/day_{day}_part_{part}.txt", part)
-    
-    if test_result == expected_results[part]:
-        print(f"Part {part} test passed!")
-
-        final_result = process_data(f"data/input/day_{day}_part_{part}.txt", part)
-        print(f"Submitting result for part {part}: {final_result}")
-        submit_answer(day, part, final_result)
-    else:
-        print(f"Part {part} test failed. Expected {expected_results[part]}, got {test_result}.")
-
 def main():
     day = 4
-    expected_results = {1: 18, 2: 9} # fill this
+    expected_results = {1: 18, 2: 9}
     title = get_daily_title(day, BASE_DAY_URL, HEADERS)
-    print(f"Starting puzzle for day {day}: {title}")
-    run_part(day, 1, expected_results)
-    run_part(day, 2, expected_results)
+    print(f"🧩 Starting puzzle for: {title}")
+    run_part(day, 1, expected_results, main_code)
+    run_part(day, 2, expected_results, main_code)
 
 if __name__ == "__main__":
     main()
