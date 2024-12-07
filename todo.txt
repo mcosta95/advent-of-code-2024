@@ -1,3 +1,4 @@
 ## TODO
 * github actions
 * single repo for all advents
+* repeat day6 part 2 and 1

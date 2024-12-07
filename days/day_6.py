@@ -38,13 +38,12 @@ def find_distance_path(start, target, direction):
     target_x, target_y = target
     dx, dy = direction
 
-    # Calculate number of steps needed in each direction
     steps = max(abs(target_x - start_x) // abs(dx) if dx != 0 else 0,
                 abs(target_y - start_y) // abs(dy) if dy != 0 else 0)
 
-    # Generate all positions using list comprehension
     path = [(start_x + i * dx, start_y + i * dy) for i in range(steps + 1)]
     return path
+
   
 def find_valid_positions(dx, dy, start_x, start_y, positions, len_matrix):
 
@@ -57,9 +56,6 @@ def find_valid_positions(dx, dy, start_x, start_y, positions, len_matrix):
         elif dx == 0: # moving horizontal
             if px == start_x and ((py - start_y) * dy > 0):
                 valid_positions.append((px, py))
-        #elif dx != 0 and dy != 0:  # Moving diagonally
-        #    if (px - start_x) * dx > 0 and (py - start_y) * dy > 0:  # Correct diagonal direction
-        #        valid_targets.append((px, py))
 
     if not valid_positions:
 
@@ -93,14 +89,8 @@ def find_valid_positions(dx, dy, start_x, start_y, positions, len_matrix):
     return True, (new_x, new_y)
 
 
-def main_code(data, part=1):
 
-    create_directions = DIRECTIONS.arrow_directions()
-    len_matrix = len(data)-1
-    positions, start_position_values = found_positions_based_on_value(data, 
-                                                               value_position="#", 
-                                                               value_start_lst=create_directions.keys())
-    
+def code_part_1(len_matrix, positions, start_position_values, create_directions):
 
     arrow_, start_x, start_y  = start_position_values
     dx, dy = create_directions[arrow_]
@@ -124,17 +114,102 @@ def main_code(data, part=1):
 
     return len(set(distance))+1  #add the last one
 
-def process_data(file_name, part):
+
+def simulate_with_early_exit(data, obstruction_pos, create_directions):
+    """Simulate the guard's movement with early exit on loop detection."""
+    # Copy the map and add the obstruction
+    modified_map = [list(row) for row in data]
+    x_obs, y_obs = obstruction_pos
+    modified_map[x_obs][y_obs] = '#'
+
+    len_matrix = len(modified_map) - 1
+    positions, start_position_values = found_positions_based_on_value(
+        modified_map, value_position="#", value_start_lst=create_directions.keys()
+    )
+    arrow_, start_x, start_y = start_position_values
+    dx, dy = create_directions[arrow_]
+
+    visited = set()
+    while True:
+        current_state = (start_x, start_y, dx, dy)
+        if current_state in visited:
+            return True  # Loop detected
+        visited.add(current_state)
+
+        valid_positions, (new_x, new_y) = find_valid_positions(dx, dy, start_x, start_y, positions, len_matrix)
+        if not valid_positions:
+            break  # Guard exits the map
+
+        # Update position and direction
+        start_x, start_y = abs(new_x - dx), abs(new_y - dy)
+        dx, dy = get_next_direction(list(create_directions.values()), (dx, dy))
+
+    return False  # No loop detected
+
+
+def precompute_reachable_positions(data, start_x, start_y, create_directions):
+    """Find all reachable positions from the guard's starting position."""
+    directions = list(create_directions.values())
+    visited = set()
+    stack = [(start_x, start_y)]
+
+    while stack:
+        x, y = stack.pop()
+        if (x, y) in visited or data[x][y] == '#':
+            continue
+        visited.add((x, y))
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < len(data) and 0 <= ny < len(data[0]):
+                stack.append((nx, ny))
+
+    return visited
+
+
+def find_obstruction_positions_optimized(data):
+    """Find valid positions for obstruction with optimization."""
+    create_directions = DIRECTIONS.arrow_directions()
+    positions, start_position_values = found_positions_based_on_value(
+        data, value_position="#", value_start_lst=create_directions.keys()
+    )
+    _, start_x, start_y = start_position_values
+
+    reachable_positions = precompute_reachable_positions(data, start_x, start_y, create_directions)
+
+    valid_positions = []
+    for x, y in reachable_positions:
+        if (x, y) == (start_x, start_y) or data[x][y] == '#':
+            continue  # Skip starting position and existing obstructions
+        if simulate_with_early_exit(data, (x, y), create_directions):
+            valid_positions.append((x, y))
+
+    return len(valid_positions), valid_positions
+
+
+def main_code(file_name, part=1):
     data = read_txt_to_str(file_name, with_split='\n')
-    return main_code(data, part)
+
+    create_directions = DIRECTIONS.arrow_directions()
+    len_matrix = len(data)-1
+    positions, start_position_values = found_positions_based_on_value(data, 
+                                                               value_position="#", 
+                                                               value_start_lst=create_directions.keys())
+    if part==1:
+        score = code_part_1(len_matrix, positions, start_position_values, create_directions)
+
+    elif part==2:
+        score, positions = find_obstruction_positions_optimized(data)
+
+    return score
+
 
 def main():
     day = 6
-    expected_results = {1: 41, 2: None} # fill this
+    expected_results = {1: 41, 2: 6} # fill this
     title = get_daily_title(day, BASE_DAY_URL, HEADERS)
     print(f"🧩 Starting puzzle for: {title}")
-    run_part(day, 1, expected_results, process_data)
-    # run_part(day, 2, expected_results, process_data)
+    run_part(day, 1, expected_results, main_code)
+    run_part(day, 2, expected_results, main_code)
 
 if __name__ == "__main__":
     main()
