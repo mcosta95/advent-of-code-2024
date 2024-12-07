@@ -21,3 +21,8 @@ class DIRECTIONS(Enum):
     def diagonal_directions(cls):
         """Returns only diagonal directions as a list of tuples."""
         return [cls.UP_LEFT.value, cls.UP_RIGHT.value, cls.DOWN_LEFT.value, cls.DOWN_RIGHT.value]
+    
+    @classmethod
+    def arrow_directions(cls):
+        return {"^": cls.UP.value, ">": cls.RIGHT.value, "v": cls.DOWN.value, "<": cls.LEFT.value}
+
