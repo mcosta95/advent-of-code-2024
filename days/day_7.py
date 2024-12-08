@@ -10,12 +10,6 @@ from src.utils import get_daily_title, run_part
 from src.read_data import read_txt_to_str
 from itertools import product
 
-def add_values(a, b):
-    return a + b
-
-def multiply_values(a, b):
-    return a*b
-
 
 def evaluate_expression(numbers, operators):
     """Evaluate the expression with given numbers and operators, left-to-right."""
@@ -28,6 +22,7 @@ def evaluate_expression(numbers, operators):
         elif op == 'x':
             result = int(str(result) + str(numbers[i + 1]))
     return result
+
 
 def main_code(file_name, part=1):
     data = read_txt_to_str(file_name, with_split="\n")

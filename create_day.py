@@ -12,23 +12,20 @@ sys.path.append(str(project_root))
 
 from config import BASE_DAY_URL, HEADERS
 from src.utils import get_daily_title, run_part
-from src.read_data import read_txt_to_str
+from src.read_data import read_txt_to_str, read_txt_vector_matrix_str
 
-def main_code(data, part=1):
+def main_code(file_name, part=1):
+    data = read_txt_to_str(file_name, with_split=None)
     pass
 
-def process_data(file_name, part):
-    with open(file_name, "r") as file:
-        data = file.read()
-    return main_code(data, part)
 
 def main():
     day = {day}
     expected_results = {{1: None, 2: None}} # fill this
     title = get_daily_title(day, BASE_DAY_URL, HEADERS)
     print(f"🧩 Starting puzzle for: {{title}}")
-    run_part(day, 1, expected_results, process_data)
-    run_part(day, 2, expected_results, process_data)
+    run_part(day, 1, expected_results, main_code)
+    run_part(day, 2, expected_results, main_code)
 
 if __name__ == "__main__":
     main()
