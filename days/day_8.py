@@ -39,8 +39,7 @@ def add_antinode_positions(node_x, node_y, dist_x, dist_y, len_rows, len_cols, a
         antinode = (node_x + dist_x, node_y + dist_y)
         if between_bounds(antinode, len_rows, len_cols):
             antinode_positions.add(antinode)
-            #antinode_positions.add((node_x, node_y))
-            node_x, node_y = antinode  # Update node coordinates
+            node_x, node_y = antinode
         else:
             break
     
