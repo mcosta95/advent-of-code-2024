@@ -23,6 +23,11 @@ class DIRECTIONS(Enum):
         return [cls.UP_LEFT.value, cls.UP_RIGHT.value, cls.DOWN_LEFT.value, cls.DOWN_RIGHT.value]
     
     @classmethod
+    def vert_horiz_directions(cls):
+        """Returns only diagonal directions as a list of tuples."""
+        return [cls.UP.value, cls.DOWN.value, cls.RIGHT.value, cls.LEFT.value]
+    
+    @classmethod
     def arrow_directions(cls):
-        return {"^": cls.UP.value, ">": cls.RIGHT.value, "v": cls.DOWN.value, "<": cls.LEFT.value}
+        return {"^": cls.UP.value, ">": cls.LEFT.value, "v": cls.DOWN.value, "<": cls.LEFT.value}
 
