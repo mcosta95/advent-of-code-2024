@@ -16,7 +16,6 @@ def main_code(file_name, part=1):
     data = read_txt_vector_matrix_str(file_name)
 
     len_rows, len_cols = (len(data), len(data[0]))
-    directions = DIRECTIONS.vert_horiz_directions()
 
     G = nx.DiGraph()
     for r in range(len_rows):
@@ -24,10 +23,10 @@ def main_code(file_name, part=1):
             current = (r, c)
             current_height = int(data[r][c])
             neighbors = [
-                        (r-1, c),  # Up
-                        (r+1, c),  # Down
-                        (r, c-1),  # Left
-                        (r, c+1)   # Right
+                        (r-1, c),
+                        (r+1, c),
+                        (r, c-1),
+                        (r, c+1)
                     ]
 
             for nr, nc in neighbors:
@@ -43,20 +42,16 @@ def main_code(file_name, part=1):
             
         trailhead_scores = {}
         for trailhead in start_nodes:
-            # Find all reachable nodes starting from the trailhead
             reachable_from_trailhead = nx.descendants(G, trailhead)
-            # Count how many of these are end points
             score = len([end for end in end_nodes if end in reachable_from_trailhead])
             trailhead_scores[trailhead] = score
     else:
         trailhead_scores = {}
         for trailhead in start_nodes:
-            # Find all distinct hiking trails starting at the trailhead
             all_trails = []
             for end in end_nodes:
                 paths = list(nx.all_simple_paths(G, source=trailhead, target=end))
                 all_trails.extend(paths)
-            # Count the total number of distinct trails
             trailhead_scores[trailhead] = len(all_trails)
 
     return sum(trailhead_scores.values())
