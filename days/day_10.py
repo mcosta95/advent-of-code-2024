@@ -8,7 +8,6 @@ sys.path.append(str(project_root))
 from config import BASE_DAY_URL, HEADERS
 from src.utils import get_daily_title, run_part
 from src.read_data import read_txt_vector_matrix_str
-from src.tools import DIRECTIONS
 import networkx as nx
 
 
