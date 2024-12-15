@@ -2,6 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 from config import BASE_DAY_URL, HEADERS
 import time
+from pathlib import Path
+import os
 
 def get_daily_title(day, BASE_URL, HEADERS):
     response = requests.get(f"{BASE_URL}{day}", headers=HEADERS)
@@ -105,3 +107,12 @@ def run_part(day, part, expected_results, process_data):
         print(f"⌛️ Time taken for [final]: {elapsed_time_final:.2f} seconds")
     else:
         print(f"Part {part} test failed. Expected {expected_results[part]}, got {test_result}.")
+
+
+def file_exists_and_rename(src, dest):
+    """Check if the source file exists and rename it to the destination."""
+    if Path(src).exists():
+        os.rename(src, dest)
+        print(f"Renamed {src} to {dest}")
+    else:
+        print(f"File {src} does not exist, skipping rename.")
