@@ -132,8 +132,8 @@ def main():
     print(f"🧩 Starting puzzle for: {title}")
     run_part(day, 1, expected_results, main_code)
     file_exists_and_rename(f"days/day_17_to_do.py", f"days/day_17_part_2.py")
-    run_part(day, 2, expected_results, main_code)
-    file_exists_and_rename(f"days/day_17_part_2.py", f"days/day_17.py")
+    #run_part(day, 2, expected_results, main_code)
+    #file_exists_and_rename(f"days/day_17_part_2.py", f"days/day_17.py")
 
 if __name__ == "__main__":
     main()
