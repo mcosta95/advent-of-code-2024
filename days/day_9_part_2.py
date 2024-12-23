@@ -67,7 +67,7 @@ def main_code_part_1(pairs_blocks_free_space):
 
    
 # TODO: Terminar.
-def main_code_part_2(pairs_blocks_free_space):
+def main_code_part_2_old(pairs_blocks_free_space):
 
     original_pairs_ = pairs_blocks_free_space.copy()
 
