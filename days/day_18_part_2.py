@@ -53,8 +53,8 @@ def main_code(file_name, part=1):
 def main():
     day = 18
     expected_results = {1: 22, 2: None} # fill this
-    #title = get_daily_title(day, BASE_DAY_URL, HEADERS)
-    #print(f"🧩 Starting puzzle for: {title}")
+    title = get_daily_title(day, BASE_DAY_URL, HEADERS)
+    print(f"🧩 Starting puzzle for: {title}")
     run_part(day, 1, expected_results, main_code)
     file_exists_and_rename(f"days/day_18_to_do.py", f"days/day_18_part_2.py")
     #run_part(day, 2, expected_results, main_code)
