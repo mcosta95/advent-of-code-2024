@@ -7,8 +7,7 @@ sys.path.append(str(project_root))
 
 from config import BASE_DAY_URL, HEADERS
 from src.utils import get_daily_title, run_part, file_exists_and_rename
-from src.read_data import read_txt_to_str, read_txt_vector_matrix_str
-from itertools import product
+from src.read_data import read_txt_to_str
 
 
 def can_make_design(design, patterns):
